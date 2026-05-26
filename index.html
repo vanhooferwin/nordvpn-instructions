@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom DNS instellen in NordVPN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1d29 0%, #2d3142 100%);
+            color: #e8e8ec;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.15em;
+            color: #a8aab8;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .intro {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #4687ff;
+            padding: 20px 25px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+
+        .intro h2 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .step {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .step-number {
+            background: #4687ff;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step h3 {
+            font-size: 1.4em;
+            color: #ffffff;
+        }
+
+        .step p {
+            margin-bottom: 15px;
+            color: #c5c7d4;
+        }
+
+        .step ul, .step ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+            color: #c5c7d4;
+        }
+
+        .step ul li, .step ol li {
+            margin-bottom: 8px;
+        }
+
+        .screenshot {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border-radius: 10px;
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .highlight {
+            background: rgba(70, 135, 255, 0.15);
+            color: #6ba3ff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .warning {
+            background: rgba(255, 165, 0, 0.1);
+            border-left: 4px solid #ffa500;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #ffd089;
+        }
+
+        .warning strong {
+            color: #ffa500;
+        }
+
+        .dns-list {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: "SF Mono", Monaco, Consolas, monospace;
+        }
+
+        .dns-list .dns-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dns-list .dns-entry:last-child {
+            border-bottom: none;
+        }
+
+        .dns-ip {
+            color: #6ba3ff;
+            font-weight: 600;
+        }
+
+        .dns-provider {
+            color: #a8aab8;
+            font-size: 0.9em;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px 0;
+            color: #8a8c9c;
+            font-size: 0.9em;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .step {
+                padding: 20px;
+            }
+
+            .step-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Aangepaste DNS instellen in NordVPN</h1>
+            <p class="subtitle">Een stap-voor-stap handleiding om je eigen DNS-servers te configureren binnen de NordVPN-app op macOS.</p>
+        </header>
+
+        <div class="intro">
+            <h2>Waarom is dit nodig?</h2>
+            <p>Deze configuratie is nodig om <strong>dm-vpn.med-info.nl</strong> correct te kunnen bereiken via NordVPN. Standaard worden de DNS-verzoeken van NordVPN niet altijd juist afgehandeld voor dit adres, waardoor de verbinding kan mislukken. Door aangepaste DNS-servers in te stellen los je dit probleem op.</p>
+            <p style="margin-top: 12px;">Met aangepaste DNS-servers bepaal je zelf welke DNS-resolvers NordVPN gebruikt. NordVPN gebruikt het eerste adres in je lijst; als dat niet reageert, schakelt het automatisch over naar het volgende.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">1</div>
+                <h3>Open de instellingen</h3>
+            </div>
+            <p>Open de <span class="highlight">NordVPN-app</span> op je Mac. Klik rechtsboven op het <strong>profielicoon</strong> en kies vervolgens <span class="highlight">Settings</span> (Instellingen) uit het uitklapmenu.</p>
+            <img src="screen-1.png" alt="NordVPN hoofdscherm met het profielmenu open en de optie Settings gemarkeerd" class="screenshot">
+        </div>
+
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">2</div>
+                <h3>Ga naar de Custom DNS-sectie</h3>
+            </div>
+            <p>In het instellingenscherm vind je aan de linkerkant een menu. Klik op <span class="highlight">Custom DNS</span> om de DNS-instellingen te openen.</p>
+            <p>Je ziet nu een uitleg waarin staat dat NordVPN het eerste DNS-adres uit je lijst gebruikt, en automatisch overschakelt naar het volgende als dat niet reageert.</p>
+            <img src="screen-2.png" alt="Het Custom DNS instellingenscherm met de schakelaar uit" class="screenshot">
+        </div>
+
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">3</div>
+                <h3>Schakel aangepaste DNS in en voeg servers toe</h3>
+            </div>
+            <p>Zet de schakelaar <span class="highlight">Use custom DNS</span> aan. Klik vervolgens op de knop <span class="highlight">Add DNS server</span> en voer een geldig IP-adres in van de DNS-server die je wilt gebruiken. Herhaal dit voor elke server die je wilt toevoegen.</p>
+
+            <p><strong>Aanbevolen DNS-servers:</strong></p>
+            <div class="dns-list">
+                <div class="dns-entry">
+                    <span class="dns-ip">8.8.8.8</span>
+                    <span class="dns-provider">Google DNS (primair)</span>
+                </div>
+                <div class="dns-entry">
+                    <span class="dns-ip">8.8.4.4</span>
+                    <span class="dns-provider">Google DNS (secundair)</span>
+                </div>
+                <div class="dns-entry">
+                    <span class="dns-ip">1.1.1.1</span>
+                    <span class="dns-provider">Cloudflare DNS</span>
+                </div>
+            </div>
+
+            <p>Wil je een server verwijderen? Klik dan op <span class="highlight">Remove server</span> naast het bijbehorende IP-adres.</p>
+            <img src="screen-3.png" alt="Het Custom DNS scherm met de schakelaar aan en drie ingestelde DNS-servers" class="screenshot">
+        </div>
+
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">4</div>
+                <h3>Klaar!</h3>
+            </div>
+            <p>Je aangepaste DNS-instellingen zijn nu actief. NordVPN gebruikt voortaan de door jou opgegeven DNS-servers wanneer je verbonden bent met de VPN. Je kunt het instellingenscherm sluiten en gewoon door blijven werken.</p>
+            <p>Wil je later controleren of je instellingen nog correct staan? Doorloop dan opnieuw stap 1 en 2.</p>
+        </div>
+
+        <footer>
+            <p>Handleiding voor het instellen van aangepaste DNS in NordVPN op macOS.</p>
+        </footer>
+    </div>
+</body>
+</html>
